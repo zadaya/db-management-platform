@@ -1,5 +1,6 @@
 body {
     font-size: .875rem;
+    padding-top: 56px;
 }
 
 .sidebar {
@@ -10,6 +11,12 @@ body {
     z-index: 100;
     padding: 48px 0 0;
     box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    width: 240px;
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+    width: 60px;
 }
 
 .sidebar-sticky {
@@ -19,4 +26,158 @@ body {
     padding-top: .5rem;
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+.sidebar .nav-link .feather {
+    margin-right: 4px;
+    color: #999;
+}
+
+.sidebar .nav-link.active {
+    color: #007bff;
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+    color: inherit;
+}
+
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
+}
+
+/*
+ * Content
+ */
+
+[role="main"] {
+    padding-top: 133px;
+}
+
+@media (min-width: 768px) {
+    [role="main"] {
+        padding-top: 48px;
+    }
+}
+
+/*
+ * Navbar
+ */
+
+.navbar-brand {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: 1rem;
+    background-color: rgba(0, 0, 0, .25);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+}
+
+.navbar .form-control {
+    padding: .75rem 1rem;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.form-control-dark {
+    color: #fff;
+    background-color: rgba(255, 255, 255, .1);
+    border-color: rgba(255, 255, 255, .1);
+}
+
+.form-control-dark:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+}
+
+.main-content {
+    transition: margin-left 0.3s ease;
+    margin-left: 240px;
+}
+
+.sidebar.collapsed ~ .main-content {
+    margin-left: 60px;
+}
+
+/*
+ * 适配移动设备
+ */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        box-shadow: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .sidebar.collapsed {
+        width: 100%;
+    }
+    
+    .sidebar.collapsed .nav-link span {
+        display: inline;
+    }
+}
+
+/*
+ * 统计卡片样式
+ */
+.card-counter {
+    position: relative;
+}
+
+/*
+ * 滚动窗口样式
+ */
+.scroll-window {
+    overflow-y: auto;
+}
+
+/*
+ * 日志项样式
+ */
+.log-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.log-item .log-time {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.log-item .log-content {
+    margin-top: 5px;
+}
+
+/*
+ * 状态指示器样式
+ */
+.status-indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.status-green {
+    background-color: #28a745;
+}
+
+.status-yellow {
+    background-color: #ffc107;
+}
+
+.status-red {
+    background-color: #dc3545;
 }

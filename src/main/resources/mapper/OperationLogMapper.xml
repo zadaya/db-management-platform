@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbplatform.mapper.OperationLogMapper">
+    <resultMap id="OperationLogResultMap" type="com.dbplatform.entity.OperationLog">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="operation_type" property="operationType" />
+        <result column="operation_content" property="operationContent" />
+        <result column="ip_address" property="ipAddress" />
+        <result column="operation_time" property="operationTime" />
+        <result column="user_name" property="userName" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dbplatform.entity.OperationLog">
+        INSERT INTO operation_log (
+            user_id, operation_type, operation_content, ip_address, operation_time
+        ) VALUES (
+            #{userId}, #{operationType}, #{operationContent}, #{ipAddress}, #{operationTime}
+        )
+    </insert>
+
+    <select id="findByUserId" parameterType="java.lang.Long" resultMap="OperationLogResultMap">
+        SELECT ol.*, u.real_name as user_name
+        FROM operation_log ol
+        LEFT JOIN sys_user u ON ol.user_id = u.id
+        WHERE ol.user_id = #{userId}
+        ORDER BY ol.operation_time DESC
+    </select>
+
+    <select id="findByType" parameterType="java.lang.String" resultMap="OperationLogResultMap">
+        SELECT ol.*, u.real_name as user_name
+        FROM operation_log ol
+        LEFT JOIN sys_user u ON ol.user_id = u.id
+        WHERE ol.operation_type = #{type}
+        ORDER BY ol.operation_time DESC
+    </select>
+
+    <select id="findAll" resultMap="OperationLogResultMap">
+        SELECT ol.*, u.real_name as user_name
+        FROM operation_log ol
+        LEFT JOIN sys_user u ON ol.user_id = u.id
+        ORDER BY ol.operation_time DESC
+    </select>
+
+    <select id="findRecentLogs" parameterType="java.lang.Integer" resultMap="OperationLogResultMap">
+        SELECT ol.*, u.real_name as user_name
+        FROM operation_log ol
+        LEFT JOIN sys_user u ON ol.user_id = u.id
+        ORDER BY ol.operation_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="countTotalLogs" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM operation_log
+    </select>
+
+    <select id="countLogsByUser" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM operation_log WHERE user_id = #{userId}
+    </select>
+</mapper>
