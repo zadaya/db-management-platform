@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbplatform.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="com.dbplatform.entity.User">
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="real_name" property="realName" />
+        <result column="email" property="email" />
+        <result column="phone" property="phone" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <select id="findByUsername" parameterType="String" resultMap="UserResultMap">
+        SELECT * FROM sys_user WHERE username = #{username} AND status = 1
+    </select>
+
+    <select id="findById" parameterType="Long" resultMap="UserResultMap">
+        SELECT * FROM sys_user WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.dbplatform.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_user (username, password, real_name, email, phone, status, create_time, update_time)
+        VALUES (#{username}, #{password}, #{realName}, #{email}, #{phone}, #{status}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.dbplatform.entity.User">
+        UPDATE sys_user
+        SET real_name = #{realName}, email = #{email}, phone = #{phone}, update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE sys_user SET password = #{password}, update_time = NOW() WHERE id = #{id}
+    </update>
+
+</mapper>
