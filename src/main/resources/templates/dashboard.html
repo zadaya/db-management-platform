@@ -230,14 +230,14 @@
                 <div class="col-md-3">
                     <div class="card-counter success">
                         <i class="fas fa-table"></i>
-                        <span class="count-numbers">0</span>
+                        <span class="count-numbers" th:text="${totalTables}">0</span>
                         <span class="count-name">数据表总数</span>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card-counter info">
                         <i class="fas fa-play-circle"></i>
-                        <span class="count-numbers">0</span>
+                        <span class="count-numbers" th:text="${recentSqlExecutions}">0</span>
                         <span class="count-name">最近执行SQL</span>
                     </div>
                 </div>
