@@ -7,6 +7,7 @@ package com.dbplatform.controller;
 import com.dbplatform.entity.User;
 import com.dbplatform.service.DbConnectionService;
 import com.dbplatform.service.OperationLogService;
+import com.dbplatform.service.SqlExecutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,9 @@ public class DashboardController {
 
     @Autowired
     private OperationLogService operationLogService;
+
+    @Autowired
+    private SqlExecutionService sqlExecutionService;
 
     /**
      * 跳转到仪表盘页面
@@ -41,6 +45,8 @@ public class DashboardController {
         long userConnections = dbConnectionService.getConnectionCountByUser(user.getId());
         long totalLogs = operationLogService.getTotalLogCount();
         long userLogs = operationLogService.getLogCountByUser(user.getId());
+        long totalTables = sqlExecutionService.getTotalTableCount();
+        long recentSqlExecutions = sqlExecutionService.getRecentSqlExecutionCount();
 
         // 最近日志
         model.addAttribute("recentLogs", operationLogService.getRecentLogs(10));
@@ -55,6 +61,8 @@ public class DashboardController {
         model.addAttribute("userConnections", userConnections);
         model.addAttribute("totalLogs", totalLogs);
         model.addAttribute("userLogs", userLogs);
+        model.addAttribute("totalTables", totalTables);
+        model.addAttribute("recentSqlExecutions", recentSqlExecutions);
 
         return "dashboard";
     }

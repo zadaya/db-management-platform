@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbplatform.mapper.SqlExecutionMapper">
+    <resultMap id="sqlExecutionResultMap" type="com.dbplatform.entity.SqlExecution">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="connectionId" column="connection_id"/>
+        <result property="sqlContent" column="sql_content"/>
+        <result property="executionTime" column="execution_time"/>
+        <result property="executionResult" column="execution_result"/>
+        <result property="affectedRows" column="affected_rows"/>
+        <result property="executionTimeMs" column="execution_time_ms"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dbplatform.entity.SqlExecution">
+        INSERT INTO sql_execution (user_id, connection_id, sql_content, execution_time, execution_result, affected_rows, execution_time_ms)
+        VALUES (#{userId}, #{connectionId}, #{sqlContent}, #{executionTime}, #{executionResult}, #{affectedRows}, #{executionTimeMs})
+    </insert>
+
+    <select id="findByUserId" parameterType="java.lang.Long" resultMap="sqlExecutionResultMap">
+        SELECT * FROM sql_execution WHERE user_id = #{userId} ORDER BY execution_time DESC
+    </select>
+
+    <select id="findRecent" parameterType="java.lang.Integer" resultMap="sqlExecutionResultMap">
+        SELECT * FROM sql_execution ORDER BY execution_time DESC LIMIT #{limit}
+    </select>
+
+    <select id="countTotal" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM sql_execution
+    </select>
+
+    <select id="countByUser" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM sql_execution WHERE user_id = #{userId}
+    </select>
+</mapper>
