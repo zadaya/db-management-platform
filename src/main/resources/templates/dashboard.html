@@ -216,17 +216,29 @@
                             <span>连接管理</span>
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="sqlExecutionDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#sqlExecutionCollapse" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="sqlExecutionCollapse">
                             <i class="fas fa-code mr-2"></i>
                             <span>SQL执行</span>
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="sqlExecutionDropdown">
-                            <a class="dropdown-item" href="/dbplatform/sql">数据查询</a>
-                            <a class="dropdown-item" href="/dbplatform/data-maintenance">数据维护</a>
-                            <a class="dropdown-item" href="/dbplatform/structure-management">结构管理</a>
-                            <a class="dropdown-item" href="/dbplatform/execution-history">执行历史</a>
-                            <a class="dropdown-item" href="/dbplatform/common-scripts">常用脚本</a>
+                        <div class="collapse" id="sqlExecutionCollapse">
+                            <ul class="nav flex-column ml-3">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dbplatform/sql">数据查询</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dbplatform/data-maintenance">数据维护</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dbplatform/structure-management">结构管理</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dbplatform/execution-history">执行历史</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dbplatform/common-scripts">常用脚本</a>
+                                </li>
+                            </ul>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -235,16 +247,23 @@
                             <span>数据浏览</span>
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#systemManagementCollapse" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="systemManagementCollapse">
                             <i class="fas fa-cog mr-2"></i>
                             <span>系统管理</span>
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/dbplatform/user-management">用户管理</a>
-                            <a class="dropdown-item" href="/dbplatform/log-viewer">日志查看</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/dbplatform/settings">系统设置</a>
+                        <div class="collapse" id="systemManagementCollapse">
+                            <ul class="nav flex-column ml-3">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dbplatform/user-management">用户管理</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dbplatform/log-viewer">日志查看</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dbplatform/settings">系统设置</a>
+                                </li>
+                            </ul>
                         </div>
                     </li>
                 </ul>
