@@ -173,27 +173,27 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-10">
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="搜索连接、表或功能" aria-label="搜索">
-                        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
-                    </form>
-                </div>
-                <div class="col-md-2 text-right">
-                    <ul class="navbar-nav d-inline-flex">
-                        <li class="nav-item">
-                            <span class="navbar-text">欢迎，<span th:text="${user.realName}">用户</span></span>
-                        </li>
-                        <li class="nav-item ml-3">
-                            <a class="nav-link" href="/dbplatform/logout">退出</a>
-                        </li>
-                    </ul>
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <form class="form-inline my-2 my-lg-0 d-flex">
+                            <input class="form-control mr-sm-2 flex-grow-1" type="search" placeholder="搜索连接、表或功能" aria-label="搜索">
+                            <button class="btn btn-outline-light my-2 my-sm-0 ml-2" type="submit">搜索</button>
+                        </form>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <ul class="navbar-nav d-inline-flex">
+                            <li class="nav-item">
+                                <span class="navbar-text">欢迎，<span th:text="${user.realName}">用户</span></span>
+                            </li>
+                            <li class="nav-item ml-3">
+                                <a class="nav-link" href="/dbplatform/logout">退出</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </nav>
 
 <div class="container-fluid">
@@ -211,7 +211,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/dbplatform/connections">
+                        <a class="nav-link" onclick="openTab('/dbplatform/connections', '连接管理', 'database')">
                             <i class="fas fa-database mr-2"></i>
                             <span>连接管理</span>
                         </a>
@@ -271,169 +271,181 @@
         </nav>
 
         <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 main-content">
-            <!-- 欢迎横幅 -->
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">控制台</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group mr-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">
-                            <i class="fas fa-download mr-1"></i>导出报告
-                        </button>
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                        <i class="fas fa-calendar-week mr-1"></i>
-                        <span>最近7天</span>
-                    </button>
-                </div>
-            </div>
+            <!-- 标签页导航 -->
+            <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="true">控制台</a>
+                </li>
+            </ul>
 
-            <!-- 统计卡片 -->
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card-counter primary">
-                        <i class="fas fa-database"></i>
-                        <span class="count-numbers" th:text="${totalConnections}">0</span>
-                        <span class="count-name">数据库连接</span>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card-counter success">
-                        <i class="fas fa-table"></i>
-                        <span class="count-numbers" th:text="${totalTables}">0</span>
-                        <span class="count-name">数据表总数</span>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card-counter info">
-                        <i class="fas fa-play-circle"></i>
-                        <span class="count-numbers" th:text="${recentSqlExecutions}">0</span>
-                        <span class="count-name">最近执行SQL</span>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card-counter warning">
-                        <i class="fas fa-heartbeat"></i>
-                        <span class="count-numbers">
-                            <span class="status-indicator status-green"></span>
-                            <span th:text="${systemStatus}">正常</span>
-                        </span>
-                        <span class="count-name">系统运行状态</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 快捷操作 -->
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">快捷操作</h3>
+            <!-- 标签页内容 -->
+            <div class="tab-content" id="mainTabContent">
+                <div class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                    <!-- 欢迎横幅 -->
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">控制台</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-group mr-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-download mr-1"></i>导出报告
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                                <i class="fas fa-calendar-week mr-1"></i>
+                                <span>最近7天</span>
+                            </button>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <a href="/dbplatform/connections/new" class="btn btn-primary btn-block p-3">
-                                        <i class="fas fa-plus-circle fa-2x mb-2"></i>
-                                        <br>
-                                        新建连接
-                                    </a>
+                    </div>
+
+                    <!-- 统计卡片 -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card-counter primary">
+                                <i class="fas fa-database"></i>
+                                <span class="count-numbers" th:text="${totalConnections}">0</span>
+                                <span class="count-name">数据库连接</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card-counter success">
+                                <i class="fas fa-table"></i>
+                                <span class="count-numbers" th:text="${totalTables}">0</span>
+                                <span class="count-name">数据表总数</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card-counter info">
+                                <i class="fas fa-play-circle"></i>
+                                <span class="count-numbers" th:text="${recentSqlExecutions}">0</span>
+                                <span class="count-name">最近执行SQL</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card-counter warning">
+                                <i class="fas fa-heartbeat"></i>
+                                <span class="count-numbers">
+                                    <span class="status-indicator status-green"></span>
+                                    <span th:text="${systemStatus}">正常</span>
+                                </span>
+                                <span class="count-name">系统运行状态</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 快捷操作 -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">快捷操作</h3>
                                 </div>
-                                <div class="col-md-3">
-                                    <a href="/dbplatform/sql" class="btn btn-success btn-block p-3">
-                                        <i class="fas fa-code fa-2x mb-2"></i>
-                                        <br>
-                                        SQL查询
-                                    </a>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="/dbplatform/import" class="btn btn-info btn-block p-3">
-                                        <i class="fas fa-upload fa-2x mb-2"></i>
-                                        <br>
-                                        数据导入
-                                    </a>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="/dbplatform/export" class="btn btn-warning btn-block p-3">
-                                        <i class="fas fa-download fa-2x mb-2"></i>
-                                        <br>
-                                        数据导出
-                                    </a>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <a href="#" class="btn btn-primary btn-block p-3" onclick="openTab('/dbplatform/connections/new', '新建连接', 'plus-circle')">
+                                                <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                                                <br>
+                                                新建连接
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="#" class="btn btn-success btn-block p-3" onclick="openTab('/dbplatform/sql', 'SQL查询', 'code')">
+                                                <i class="fas fa-code fa-2x mb-2"></i>
+                                                <br>
+                                                SQL查询
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="#" class="btn btn-info btn-block p-3" onclick="openTab('/dbplatform/import', '数据导入', 'upload')">
+                                                <i class="fas fa-upload fa-2x mb-2"></i>
+                                                <br>
+                                                数据导入
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="#" class="btn btn-warning btn-block p-3" onclick="openTab('/dbplatform/export', '数据导出', 'download')">
+                                                <i class="fas fa-download fa-2x mb-2"></i>
+                                                <br>
+                                                数据导出
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- 任务中心和系统事件 -->
-            <div class="row mt-4">
-                <!-- 任务中心 -->
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">任务中心</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>任务名称</th>
-                                            <th>类型</th>
-                                            <th>状态</th>
-                                            <th>创建时间</th>
-                                            <th>操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>数据备份任务</td>
-                                            <td>备份</td>
-                                            <td><span class="badge badge-success">已完成</span></td>
-                                            <td>2023-05-15 14:30</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-info">查看详情</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>数据同步任务</td>
-                                            <td>同步</td>
-                                            <td><span class="badge badge-warning">执行中</span></td>
-                                            <td>2023-05-15 15:00</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-info">查看详情</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>SQL脚本执行</td>
-                                            <td>执行</td>
-                                            <td><span class="badge badge-danger">失败</span></td>
-                                            <td>2023-05-15 15:30</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-info">查看详情</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                    <!-- 任务中心和系统事件 -->
+                    <div class="row mt-4">
+                        <!-- 任务中心 -->
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">任务中心</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>任务名称</th>
+                                                    <th>类型</th>
+                                                    <th>状态</th>
+                                                    <th>创建时间</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>数据备份任务</td>
+                                                    <td>备份</td>
+                                                    <td><span class="badge badge-success">已完成</span></td>
+                                                    <td>2023-05-15 14:30</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info">查看详情</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>数据同步任务</td>
+                                                    <td>同步</td>
+                                                    <td><span class="badge badge-warning">执行中</span></td>
+                                                    <td>2023-05-15 15:00</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info">查看详情</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>SQL脚本执行</td>
+                                                    <td>执行</td>
+                                                    <td><span class="badge badge-danger">失败</span></td>
+                                                    <td>2023-05-15 15:30</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info">查看详情</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- 系统事件 -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">系统事件</h3>
-                        </div>
-                        <div class="card-body scroll-window">
-                            <div th:each="log : ${recentLogs}" class="log-item">
-                                <div class="log-time">
-                                    <span th:text="${#dates.format(log.operationTime, 'yyyy-MM-dd HH:mm')}">2023-05-15 14:30</span>
+                        <!-- 系统事件 -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">系统事件</h3>
                                 </div>
-                                <div class="log-content">
-                                    <span th:text="${log.userName}">管理员</span>
-                                    <span th:text="${log.operationContent}">执行了SQL查询</span>
+                                <div class="card-body scroll-window">
+                                    <div th:each="log : ${recentLogs}" class="log-item">
+                                        <div class="log-time">
+                                            <span th:text="${#dates.format(log.operationTime, 'yyyy-MM-dd HH:mm')}">2023-05-15 14:30</span>
+                                        </div>
+                                        <div class="log-content">
+                                            <span th:text="${log.userName}">管理员</span>
+                                            <span th:text="${log.operationContent}">执行了SQL查询</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -447,12 +459,105 @@
 <script src="static/js/jquery-3.6.0.js"></script>
 <script src="static/js/bootstrap.bundle.min.js"></script>
 <script>
-    // 侧边栏折叠功能
-    $(document).ready(function() {
-        $('#sidebarToggle').click(function() {
-            $('.sidebar').toggleClass('collapsed');
+        // 侧边栏折叠功能
+        document.addEventListener('DOMContentLoaded', function() {
+            var sidebarToggle = document.querySelector('#sidebarToggle');
+            var sidebar = document.querySelector('.sidebar');
+            var mainContent = document.querySelector('.main-content');
+
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                // 调整主内容区margin-left
+                if (sidebar.classList.contains('collapsed')) {
+                    mainContent.style.marginLeft = '60px';
+                } else {
+                    mainContent.style.marginLeft = '240px';
+                }
+            });
+
+            // 监听窗口大小变化，自动调整侧边栏状态
+            window.addEventListener('resize', function() {
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('collapsed');
+                    mainContent.style.marginLeft = '60px';
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.style.marginLeft = '240px';
+                }
+            });
+
+            // 初始化主内容区margin-left
+            if (sidebar.classList.contains('collapsed')) {
+                mainContent.style.marginLeft = '60px';
+            } else {
+                mainContent.style.marginLeft = '240px';
+            }
         });
-    });
-</script>
+
+        // 标签页功能
+        function openTab(url, title, icon) {
+            // 检查标签页是否已存在
+            var tabId = 'tab-' + url.replace(/\//g, '-').replace(/:/g, '');
+            var existingTab = document.querySelector('#' + tabId + '-tab');
+
+            if (existingTab) {
+                // 如果标签页已存在，激活它
+                var tab = new bootstrap.Tab(existingTab);
+                tab.show();
+                return;
+            }
+
+            // 创建新标签页导航项
+            var navTabs = document.querySelector('#mainTabs');
+            var newNavItem = document.createElement('li');
+            newNavItem.className = 'nav-item';
+            newNavItem.innerHTML = `
+                <a class="nav-link" id="${tabId}-tab" data-bs-toggle="tab" href="#${tabId}" role="tab" aria-controls="${tabId}" aria-selected="false">
+                    <i class="fas fa-${icon}"></i> ${title}
+                    <button class="close-tab ml-2" onclick="closeTab('${tabId}')">&times;</button>
+                </a>
+            `;
+            navTabs.appendChild(newNavItem);
+
+            // 创建新标签页内容
+            var tabContent = document.querySelector('#mainTabContent');
+            var newTabContent = document.createElement('div');
+            newTabContent.id = tabId;
+            newTabContent.className = 'tab-pane fade';
+            newTabContent.setAttribute('role', 'tabpanel');
+            newTabContent.setAttribute('aria-labelledby', `${tabId}-tab`);
+            tabContent.appendChild(newTabContent);
+
+            // 加载内容
+            $(newTabContent).load(url, function() {
+                // 激活新标签页
+                var tab = new bootstrap.Tab(document.querySelector(`#${tabId}-tab`));
+                tab.show();
+            });
+        }
+
+        // 关闭标签页功能
+        function closeTab(tabId) {
+            var tab = document.querySelector('#' + tabId + '-tab');
+            var tabContent = document.querySelector('#' + tabId);
+
+            if (tab && tabContent) {
+                // 如果关闭的是当前激活的标签页，激活前一个标签页
+                if (tab.classList.contains('active')) {
+                    var previousTab = tab.parentElement.previousElementSibling;
+                    if (previousTab) {
+                        var previousTabLink = previousTab.querySelector('a.nav-link');
+                        if (previousTabLink) {
+                            $(previousTabLink).tab('show');
+                        }
+                    }
+                }
+
+                // 移除标签页
+                tab.parentElement.remove();
+                tabContent.remove();
+            }
+        }
+    </script>
 </body>
 </html>
