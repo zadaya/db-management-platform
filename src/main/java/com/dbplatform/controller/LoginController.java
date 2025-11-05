@@ -1,3 +1,7 @@
+/**
+ * 登录控制器
+ * 处理用户登录、登出等相关请求
+ */
 package com.dbplatform.controller;
 
 import com.dbplatform.entity.User;
@@ -17,11 +21,23 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 跳转到登录页面
+     * @return 登录页面的视图名称
+     */
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
 
+    /**
+     * 处理用户登录请求
+     * @param username 用户名
+     * @param password 密码
+     * @param session 会话对象
+     * @param model 模型对象
+     * @return 登录成功则跳转到仪表盘，否则返回登录页面
+     */
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
@@ -37,19 +53,24 @@ public class LoginController {
         }
     }
 
+    /**
+     * 处理用户登出请求
+     * @param session 会话对象
+     * @return 跳转到登录页面
+     */
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("currentUser");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-        return "dashboard";
-    }
+    // @GetMapping("/")
+    // public String dashboard(HttpSession session, Model model) {
+    //     User user = (User) session.getAttribute("currentUser");
+    //     if (user == null) {
+    //         return "redirect:/login";
+    //     }
+    //     model.addAttribute("user", user);
+    //     return "dashboard";
+    // }
 }
