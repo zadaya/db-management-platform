@@ -35,10 +35,14 @@ public class DashboardController {
      */
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("currentUser");
-        if (user == null) {
-            return "redirect:/login";
-        }
+        // 模拟登录用户
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("admin");
+        user.setRealName("管理员");
+        user.setEmail("admin@example.com");
+        // user.setRole("admin");
+        session.setAttribute("currentUser", user);
 
         // 统计信息
         long totalConnections = dbConnectionService.getTotalConnectionCount();
