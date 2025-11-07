@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DB管理平台 - 控制台</title>
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/main-content.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        .card-counter {
+            box-shadow: 2px 2px 10px #DADADA;
+            margin: 5px;
+            padding: 20px 10px;
+            background-color: #fff;
+            height: 100px;
+            border-radius: 5px;
+            transition: .3s linear all;
+        }
+
+        .card-counter:hover {
+            box-shadow: 4px 4px 20px #DADADA;
+            transition: .3s linear all;
+        }
+
+        .card-counter.primary {
+            background-color: #007bff;
+            color: #FFF;
+        }
+
+        .card-counter.success {
+            background-color: #28a745;
+            color: #FFF;
+        }
+
+        .card-counter.info {
+            background-color: #17a2b8;
+            color: #FFF;
+        }
+
+        .card-counter.warning {
+            background-color: #ffc107;
+            color: #FFF;
+        }
+
+        .card-counter i {
+            font-size: 5em;
+            opacity: 0.2;
+        }
+
+        .card-counter .count-numbers {
+            position: absolute;
+            right: 35px;
+            top: 20px;
+            font-size: 32px;
+            display: block;
+        }
+
+        .card-counter .count-name {
+            position: absolute;
+            right: 35px;
+            top: 65px;
+            font-style: italic;
+            text-transform: capitalize;
+            opacity: 0.5;
+            display: block;
+            font-size: 18px;
+        }
+
+        .sidebar {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        /* 菜单项动画效果 */
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: translateX(5px);
+        }
+
+        /* 下拉菜单动画效果 */
+        .dropdown-menu {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 图标动画效果 */
+        .nav-link i {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed~.main-content {
+            margin-left: 60px;
+        }
+
+        .scroll-window {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .log-item .log-time {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .log-item .log-content {
+            margin-top: 5px;
+        }
+
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .status-green {
+            background-color: #28a745;
+        }
+
+        .status-yellow {
+            background-color: #ffc107;
+        }
+
+        .status-red {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">DB管理平台</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <form class="form-inline my-2 my-lg-0 d-flex">
+                            <input class="form-control mr-sm-2 flex-grow-1" type="search" placeholder="搜索连接、表或功能"
+                                aria-label="搜索">
+                            <button class="btn btn-outline-light my-2 my-sm-0 ml-2" type="submit">搜索</button>
+                        </form>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <ul class="navbar-nav d-inline-flex">
+                            <li class="nav-item">
+                                <span class="navbar-text">欢迎，<span th:text="${user.realName}">用户</span></span>
+                            </li>
+                            <li class="nav-item ml-3">
+                                <a class="nav-link" href="/dbplatform/logout">退出</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 侧边栏 -->
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <button class="btn btn-link btn-sm text-muted mb-3" id="sidebarToggle">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <ul class="nav flex-column">
+                        <!-- <li class="nav-item">
+                        <a class="nav-link active" onclick="openTab('/dbplatform/index', '控制台', 'dashboard')">
+                            <i class="fas fa-tachometer-alt mr-2"></i>
+                            <span>控制台</span>
+                        </a>
+                    </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="openTab('/dbplatform/dashboard', '控制台', 'tachometer-alt')">
+                                <i class="fas fa-tachometer-alt mr-2"></i>
+                                <span>控制台</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="openTab('/dbplatform/connections', '连接管理', 'database')">
+                                <i class="fas fa-database mr-2"></i>
+                                <span>连接管理</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#sqlExecutionCollapse" role="button" data-bs-toggle="collapse"
+                                aria-expanded="false" aria-controls="sqlExecutionCollapse">
+                                <i class="fas fa-code mr-2"></i>
+                                <span>SQL执行</span>
+                            </a>
+                            <div class="collapse" id="sqlExecutionCollapse">
+                                <ul class="nav flex-column ml-3">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dbplatform/sql">数据查询</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dbplatform/data-maintenance">数据维护</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dbplatform/structure-management">结构管理</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dbplatform/execution-history">执行历史</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dbplatform/common-scripts">常用脚本</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dbplatform/data-browser">
+                                <i class="fas fa-folder-open mr-2"></i>
+                                <span>数据浏览</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#systemManagementCollapse" role="button" data-bs-toggle="collapse"
+                                aria-expanded="false" aria-controls="systemManagementCollapse">
+                                <i class="fas fa-cog mr-2"></i>
+                                <span>系统管理</span>
+                            </a>
+                            <div class="collapse" id="systemManagementCollapse">
+                                <ul class="nav flex-column ml-3">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dbplatform/user-management">用户管理</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dbplatform/log-viewer">日志查看</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/dbplatform/settings">系统设置</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 main-content">
+
+
+                <!-- 标签页导航 -->
+                <ul class="nav nav-tabs" id="mainTabs" role="tablist" style="display: inline-flex;">
+                    <!-- <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#index" role="tab" aria-controls="dashboard" aria-selected="true">控制台</a>
+                    </li> -->
+                </ul>
+                <div class="btn-toolbar mb-2 mb-md-0" id="exportReportBtnGroup"
+                    style="display: inline-block; margin-right: 0px; float: right;">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-download mr-1"></i>
+                        <span>导出报告</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                        <i class="fas fa-calendar-week mr-1"></i>
+                        <span>最近7天</span>
+                    </button>
+                </div>
+
+                <!-- 默认打开控制台标签页 -->
+                <div class="tab-content" id="mainTabContent">
+
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="static/js/jquery-3.6.0.min.js"></script>
+    <script src="static/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 侧边栏折叠功能
+        document.addEventListener('DOMContentLoaded', function () {
+            var sidebarToggle = document.querySelector('#sidebarToggle');
+            var sidebar = document.querySelector('.sidebar');
+            var mainContent = document.querySelector('.main-content');
+
+            sidebarToggle.addEventListener('click', function () {
+                sidebar.classList.toggle('collapsed');
+                // 调整主内容区margin-left
+                if (sidebar.classList.contains('collapsed')) {
+                    mainContent.style.marginLeft = '60px';
+                } else {
+                    mainContent.style.marginLeft = '240px';
+                }
+            });
+
+            // 监听窗口大小变化，自动调整侧边栏状态
+            window.addEventListener('resize', function () {
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('collapsed');
+                    mainContent.style.marginLeft = '60px';
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.style.marginLeft = '240px';
+                }
+            });
+
+            // 初始化主内容区margin-left
+            if (sidebar.classList.contains('collapsed')) {
+                mainContent.style.marginLeft = '60px';
+            } else {
+                mainContent.style.marginLeft = '240px';
+            }
+        });
+
+        // 标签页功能
+        function openTab(url, title, icon) {
+            // 检查标签页是否已存在
+            var tabId = 'tab-' + url.replace(/\//g, '-').replace(/:/g, '');
+            var existingTab = document.querySelector('#' + tabId + '-tab');
+
+            if (existingTab) {
+                // 如果标签页已存在，激活它
+                var tab = new bootstrap.Tab(existingTab);
+                tab.show();
+                return;
+            }
+
+            // 创建新标签页导航项
+            var navTabs = document.querySelector('#mainTabs');
+            var newNavItem = document.createElement('li');
+            newNavItem.className = 'nav-item';
+            newNavItem.innerHTML = `
+                <a class="nav-link" id="${tabId}-tab" data-bs-toggle="tab" href="#${tabId}" role="tab" aria-controls="${tabId}" aria-selected="false">
+                    <i class="fas fa-${icon}"></i> ${title}
+                    <button class="close-tab ml-2" onclick="closeTab('${tabId}')">&times;</button>
+                </a>
+            `;
+            navTabs.appendChild(newNavItem);
+
+            // 创建新标签页内容
+            var tabContent = document.querySelector('#mainTabContent');
+            var newTabContent = document.createElement('div');
+            newTabContent.id = tabId;
+            newTabContent.className = 'tab-pane fade';
+            newTabContent.setAttribute('role', 'tabpanel');
+            newTabContent.setAttribute('aria-labelledby', `${tabId}-tab`);
+            tabContent.appendChild(newTabContent);
+
+            // 加载内容
+            $(newTabContent).load(url, function () {
+                // 激活新标签页
+                var tab = new bootstrap.Tab(document.querySelector(`#${tabId}-tab`));
+                tab.show();
+            });
+        }
+
+        // 关闭标签页功能
+        function closeTab(tabId) {
+            var tab = document.querySelector('#' + tabId + '-tab');
+            var tabContent = document.querySelector('#' + tabId);
+
+            if (tab && tabContent) {
+                // 如果关闭的是当前激活的标签页，激活前一个标签页
+                if (tab.classList.contains('active')) {
+                    var previousTab = tab.parentElement.previousElementSibling;
+                    if (previousTab) {
+                        var previousTabLink = previousTab.querySelector('a.nav-link');
+                        if (previousTabLink) {
+                            $(previousTabLink).tab('show');
+                        }
+                    }
+                }
+
+                // 移除标签页
+                tab.parentElement.remove();
+                tabContent.remove();
+            }
+        }
+    </script>
+</body>
+
+</html>
