@@ -64,13 +64,17 @@ public class LoginController {
         return "redirect:/login";
     }
 
-    // @GetMapping("/")
-    // public String dashboard(HttpSession session, Model model) {
-    //     User user = (User) session.getAttribute("currentUser");
-    //     if (user == null) {
-    //         return "redirect:/login";
-    //     }
-    //     model.addAttribute("user", user);
-    //     return "dashboard";
-    // }
+    @GetMapping("/")
+    public String dashboard(HttpSession session, Model model) {
+        // 模拟登录用户
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("admin");
+        user.setRealName("管理员");
+        user.setEmail("admin@example.com");
+        // user.setRole("admin");
+        session.setAttribute("currentUser", user);
+        model.addAttribute("user", user);
+        return "dashboard";
+    }
 }
