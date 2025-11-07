@@ -78,6 +78,44 @@
         ORDER BY update_time DESC
     </select>
 
+    <select id="findByConditionWithPagination" parameterType="java.util.Map" resultMap="DbConnectionResultMap">
+        SELECT * FROM db_connection
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="dbType != null and dbType != ''">
+                AND db_type = #{dbType}
+            </if>
+            <if test="host != null and host != ''">
+                AND host LIKE CONCAT('%', #{host}, '%')
+            </if>
+            <if test="createUser != null">
+                AND create_user = #{createUser}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countByCondition" parameterType="java.util.Map" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM db_connection
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="dbType != null and dbType != ''">
+                AND db_type = #{dbType}
+            </if>
+            <if test="host != null and host != ''">
+                AND host LIKE CONCAT('%', #{host}, '%')
+            </if>
+            <if test="createUser != null">
+                AND create_user = #{createUser}
+            </if>
+        </where>
+    </select>
+
     <select id="countTotalConnections" resultType="java.lang.Long">
         SELECT COUNT(*) FROM db_connection
     </select>

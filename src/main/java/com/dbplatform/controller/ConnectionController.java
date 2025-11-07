@@ -51,15 +51,20 @@ public class ConnectionController {
     }
 
     /**
-     * 根据条件查询连接
+     * 根据条件查询连接（支持分页）
      * 
      * @param params 查询参数
-     * @return 连接列表
+     * @return 包含连接列表和总记录数的Map
      */
     @PostMapping("/search")
     @ResponseBody
-    public List<DbConnection> searchConnections(@RequestBody Map<String, Object> params) {
-        return connectionService.getConnectionsByCondition(params);
+    public Map<String, Object> searchConnections(@RequestBody Map<String, Object> params) {
+        Map<String, Object> result = new HashMap<>();
+        List<DbConnection> connections = connectionService.getConnectionsByConditionWithPagination(params);
+        Long total = connectionService.getConnectionsCountByCondition(params);
+        result.put("connections", connections);
+        result.put("total", total);
+        return result;
     }
 
     /**

@@ -110,45 +110,261 @@
                             </tr>
                         </thead>
                         <tbody id="connectionTableBody">
-                            <tr th:each="connection : ${connections}">
-                                <td>
-                                    <input type="checkbox" class="connectionCheckbox" th:value="${connection.id}">
-                                </td>
-                                <td th:text="${connection.name}"></td>
-                                <td th:text="${connection.host} + ':' + ${connection.port}"></td>
-                                <td>
-                                    <span class="status-indicator status-offline"></span>
-                                    <span>离线</span>
-                                </td>
-                                <td th:text="${connection.dbType}"></td>
-                                <td th:text="${#dates.format(connection.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                        th:onclick="editConnection([[${connection.id}]])">
-                                        <i class="fas fa-edit"></i> 编辑
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                        th:onclick="deleteConnection([[${connection.id}]])">
-                                        <i class="fas fa-trash"></i> 删除
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-info"
-                                        th:onclick="testConnection([[${connection.id}]])">
-                                        <i class="fas fa-plug"></i> 测试
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-secondary"
-                                        th:onclick="copyConnection([[${connection.id}]])">
-                                        <i class="fas fa-copy"></i> 复制
-                                    </button>
-                                </td>
-                            </tr>
+                            <!-- 数据将通过JavaScript动态加载 -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- 分页组件 -->
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <span id="totalRecords"></span> 条记录
+                    </div>
+                    <div class="col-md-6">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-end">
+                                <li class="page-item" id="prevPage">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item active" id="page1">
+                                    <a class="page-link" href="#">1</a>
+                                </li>
+                                <li class="page-item" id="nextPage">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <script src="static/js/jquery-3.6.0.min.js"></script>
     <script src="static/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 分页参数
+        var currentPage = 1;
+        var pageSize = 10;
+        var totalPages = 1;
+        var totalRecords = 0;
+
+        // 页面加载完成后初始化数据
+        $(document).ready(function() {
+            loadConnections();
+        });
+
+        // 加载连接数据
+        function loadConnections() {
+            // 获取筛选条件
+            var params = {
+                name: $('#filterName').val(),
+                host: $('#filterHost').val(),
+                dbType: $('#filterDbType').val(),
+                offset: (currentPage - 1) * pageSize,
+                pageSize: pageSize
+            };
+
+            // 发送AJAX请求获取数据
+            $.ajax({
+                url: '/connections/search',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function(data) {
+                    // 渲染连接列表
+                    renderConnections(data.connections);
+                    // 更新分页信息
+                    totalRecords = data.total;
+                    totalPages = Math.ceil(totalRecords / pageSize);
+                    updatePagination();
+                },
+                error: function() {
+                    alert('加载连接数据失败');
+                }
+            });
+        }
+
+        // 渲染连接列表
+        function renderConnections(connections) {
+            var tbody = $('#connectionTableBody');
+            tbody.empty();
+
+            if (connections.length === 0) {
+                var tr = $('<tr></tr>');
+                tr.append('<td colspan="7" class="text-center">暂无数据</td>');
+                tbody.append(tr);
+                return;
+            }
+
+            for (var i = 0; i < connections.length; i++) {
+                var connection = connections[i];
+                var tr = $('<tr></tr>');
+
+                tr.append('<td><input type="checkbox" class="connectionCheckbox" value="' + connection.id + '"></td>');
+                tr.append('<td>' + connection.name + '</td>');
+                tr.append('<td>' + connection.host + ':' + connection.port + '</td>');
+                tr.append('<td><span class="status-indicator status-offline"></span>离线</td>');
+                tr.append('<td>' + connection.dbType + '</td>');
+                tr.append('<td>' + formatDate(connection.updateTime) + '</td>');
+                tr.append('<td>' +
+                    '<button type="button" class="btn btn-sm btn-primary" onclick="editConnection(' + connection.id + ')"><i class="fas fa-edit"></i> 编辑</button> ' +
+                    '<button type="button" class="btn btn-sm btn-danger" onclick="deleteConnection(' + connection.id + ')"><i class="fas fa-trash"></i> 删除</button> ' +
+                    '<button type="button" class="btn btn-sm btn-info" onclick="testConnection(' + connection.id + ')"><i class="fas fa-plug"></i> 测试</button> ' +
+                    '<button type="button" class="btn btn-sm btn-secondary" onclick="copyConnection(' + connection.id + ')"><i class="fas fa-copy"></i> 复制</button>' +
+                    '</td>');
+
+                tbody.append(tr);
+            }
+        }
+
+        // 格式化日期
+        function formatDate(dateStr) {
+            var date = new Date(dateStr);
+            var year = date.getFullYear();
+            var month = ('0' + (date.getMonth() + 1)).slice(-2);
+            var day = ('0' + date.getDate()).slice(-2);
+            var hours = ('0' + date.getHours()).slice(-2);
+            var minutes = ('0' + date.getMinutes()).slice(-2);
+            var seconds = ('0' + date.getSeconds()).slice(-2);
+            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+        }
+
+        // 更新分页信息
+        function updatePagination() {
+            // 更新总记录数
+            $('#totalRecords').text(totalRecords);
+
+            // 更新分页按钮
+            var pagination = $('.pagination');
+            var prevPage = $('#prevPage');
+            var nextPage = $('#nextPage');
+
+            // 移除旧的页码按钮
+            pagination.find('.page-item:not(#prevPage):not(#nextPage)').remove();
+
+            // 添加新的页码按钮
+            for (var i = 1; i <= totalPages; i++) {
+                var li = $('<li class="page-item"></li>');
+                var a = $('<a class="page-link" href="#"></a>').text(i);
+                if (i === currentPage) {
+                    li.addClass('active');
+                }
+                li.append(a);
+                li.insertBefore(nextPage);
+
+                // 添加点击事件
+                (function(page) {
+                    li.click(function() {
+                        currentPage = page;
+                        loadConnections();
+                    });
+                })(i);
+            }
+
+            // 禁用/启用上一页按钮
+            if (currentPage === 1) {
+                prevPage.addClass('disabled');
+            } else {
+                prevPage.removeClass('disabled');
+            }
+
+            // 禁用/启用下一页按钮
+            if (currentPage === totalPages) {
+                nextPage.addClass('disabled');
+            } else {
+                nextPage.removeClass('disabled');
+            }
+        }
+
+        // 上一页
+        $('#prevPage').click(function() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadConnections();
+            }
+        });
+
+        // 下一页
+        $('#nextPage').click(function() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadConnections();
+            }
+        });
+
+        // 筛选功能
+        function searchConnections() {
+            currentPage = 1;
+            loadConnections();
+        }
+
+        // 重置功能
+        function resetFilters() {
+            $('#filterName').val('');
+            $('#filterHost').val('');
+            $('#filterDbType').val('');
+            currentPage = 1;
+            loadConnections();
+        }
+
+        // 编辑连接
+        function editConnection(id) {
+            // 这里可以添加编辑连接的逻辑
+            alert('编辑连接: ' + id);
+        }
+
+        // 删除连接
+        function deleteConnection(id) {
+            // 这里可以添加删除连接的逻辑
+            alert('删除连接: ' + id);
+        }
+
+        // 测试连接
+        function testConnection(id) {
+            // 这里可以添加测试连接的逻辑
+            alert('测试连接: ' + id);
+        }
+
+        // 复制连接
+        function copyConnection(id) {
+            // 这里可以添加复制连接的逻辑
+            alert('复制连接: ' + id);
+        }
+
+        // 全选/取消全选
+        $('#selectAll').click(function() {
+            var isChecked = $(this).prop('checked');
+            $('.connectionCheckbox').prop('checked', isChecked);
+            updateBatchDeleteButton();
+        });
+
+        // 更新批量删除按钮状态
+        function updateBatchDeleteButton() {
+            var checkedCount = $('.connectionCheckbox:checked').length;
+            $('#batchDeleteBtn').prop('disabled', checkedCount === 0);
+        }
+
+        // 单个复选框点击事件
+        $(document).on('click', '.connectionCheckbox', function() {
+            updateBatchDeleteButton();
+        });
+
+        // 批量删除
+        $('#batchDeleteBtn').click(function() {
+            var checkedIds = [];
+            $('.connectionCheckbox:checked').each(function() {
+                checkedIds.push($(this).val());
+            });
+            if (checkedIds.length > 0) {
+                // 这里可以添加批量删除的逻辑
+                alert('批量删除连接: ' + checkedIds.join(','));
+            }
+        });
+    </script>
 </body>
 
 </html>
