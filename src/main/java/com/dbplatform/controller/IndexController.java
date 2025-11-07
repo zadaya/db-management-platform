@@ -5,10 +5,6 @@
 package com.dbplatform.controller;
 
 import com.dbplatform.entity.User;
-import com.dbplatform.service.ConnectionService;
-import com.dbplatform.service.OperationLogService;
-import com.dbplatform.service.SqlExecutionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +13,6 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class IndexController {
-
-    @Autowired
-    private ConnectionService dbConnectionService;
-
-    @Autowired
-    private OperationLogService operationLogService;
-
-    @Autowired
-    private SqlExecutionService sqlExecutionService;
 
     /**
      * 跳转到仪表盘页面

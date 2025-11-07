@@ -71,6 +71,9 @@
                             <input type="text" id="filterName" class="form-control" placeholder="连接名称">
                         </div>
                         <div class="col-md-3">
+                            <input type="text" id="filterHost" class="form-control" placeholder="主机地址">
+                        </div>
+                        <div class="col-md-3">
                             <select id="filterDbType" class="form-control">
                                 <option value="">数据库类型</option>
                                 <option value="mysql">MySQL</option>
@@ -78,9 +81,6 @@
                                 <option value="postgresql">PostgreSQL</option>
                                 <option value="sqlserver">SQL Server</option>
                             </select>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" id="filterHost" class="form-control" placeholder="主机地址">
                         </div>
                         <div class="col-md-3">
                             <button type="button" class="btn btn-primary" onclick="searchConnections()">
