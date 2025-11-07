@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface DbConnectionService {
+public interface ConnectionService {
     List<DbConnection> getAllConnections();
     List<DbConnection> getConnectionsByUserId(Long userId);
     List<DbConnection> getConnectionsByCondition(Map<String, Object> params);
@@ -26,7 +26,7 @@ public interface DbConnectionService {
 }
 
 @Service
-class DbConnectionServiceImpl implements DbConnectionService {
+class DbConnectionServiceImpl implements ConnectionService {
 
     @Autowired
     private DbConnectionMapper dbConnectionMapper;
